@@ -1,0 +1,46 @@
+//create database
+use dbms
+
+//create collection
+dbms>db.createCollection("orders");
+
+//insert data
+db.orders.insert({Cust_id:"A123",amount:250,status:"A"});
+db.orders.insert({Cust_id:"B123",amount:200,status:"B"});
+db.orders.insert({Cust_id:"C123",amount:250,status:"C"});
+db.orders.insert({Cust_id:"D123",amount:200,status:"A"});
+db.orders.insert({Cust_id:"E123",amount:250,status:"B"});
+
+//declare variables
+var mapfunction=function(){emit(this.Cust_id,this.amount)}
+
+var reducefunction=function(key,values){return Array.sum(values)}
+
+//show data
+
+db.Result1_mapreduce.find()
+
+//-----------OUtput----------
+//[	{_id:'A123',values:1500},
+//	{_id:'B123',values:800},
+//	{_id:'B123',values:200}
+//]
+
+//mapreduce without query
+
+db.orders.mapReduce(mapfunction,reducefunction,{'out':'Result1_mapreduce'})
+//{result:'Result1_mapreduce',ok:1}
+//[	{_id:'B123',values:200},
+//	{_id:'B123',values:800},
+//	{_id:'A123',values:1500}
+//]
+
+
+//mapreduce query condition
+
+db.orders.mapReduce(function(){emit(this.Cust_id,this.amount);},function(key,values)
+{return Array.avg(values)},{query:{amount:{$gt:200}},out:'Result2_mapreduce'})
+//{result:'Result2_mapreduce',ok:1}
+
+db.Result2_mapreduce.find()
+//[	{_id:'A123',value:375},{_id:'B212',value:300}	]
