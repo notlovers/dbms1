@@ -1,0 +1,51 @@
+// Implement queries for aggregation and indexing with suitable example using MongoDB.
+INDEXING
+	SYNTAX: >db.COLLECTION_NAME.createIndex({KEY:1})
+•	>db.mycol.createIndex({"title":1})
+
+AGGREGATION
+	SYNTAX: >db.COLLECTION_NAME.aggregate(AGGREGATE_OPERATION)
+
+EXAMPLE: //Create Objects in DB
+In the collection you have the following data:
+{
+ _id: ObjectId(7df78ad8902c)
+ title: 'MongoDB Overview',
+ description: 'MongoDB is no sql database',
+ by_user: 'tutorials point',
+ url: 'http://www.tutorialspoint.com',
+ tags: ['mongodb', 'database', 'NoSQL'],
+ likes: 100
+},
+{
+ _id: ObjectId(7df78ad8902d)
+ title: 'NoSQL Overview',
+ description: 'No sql database is very fast',
+ by_user: 'tutorials point',
+ url: 'http://www.tutorialspoint.com',
+ tags: ['mongodb', 'database', 'NoSQL'],
+ likes: 10
+},
+{
+ _id: ObjectId(7df78ad8902e)
+ title: 'Neo4j Overview',
+ description: 'Neo4j is no sql database',
+ by_user: 'Neo4j',
+ url: 'http://www.neo4j.com',
+ tags: ['neo4j', 'database', 'NoSQL'],
+ likes: 750
+}, 
+•	db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$sum : 1}}}])
+{
+ "result" : [
+ {
+ "_id" : "tutorials point", "num_tutorial" : 2
+ },
+ {
+ "_id" : "tutorials point",
+ "num_tutorial" : 1
+ }
+ ],
+ "ok" : 1
+}
+>

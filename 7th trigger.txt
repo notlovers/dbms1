@@ -1,0 +1,100 @@
+SQL> Create table LIBRARY (BOOK_ID number, BOOK_NAME Varchar2(10), 
+BOOK_PRICE number);
+Table created.
+SQL> desc library;
+Name Null? Type
+----------------------------------------- -------- ----------------------------
+BOOK_ID NUMBER
+BOOK_NAME VARCHAR2(10)
+BOOK_PRICE NUMBER
+SQL> Create table LIBRARY_AUDIT_ROW (BOOK_ID number, BOOK_NAME 
+Varchar2(10), BOOK_PRICE number,AUDIT_CHANGE Varchar2(20), UPDATE_TIME Date);
+Table created.
+SQL> desc library_audit_row;
+Name Null? Type
+----------------------------------------- -------- ----------------------------
+BOOK_ID NUMBER
+BOOK_NAME VARCHAR2(10)
+BOOK_PRICE NUMBER
+AUDIT_CHANGE VARCHAR2(20)
+UPDATE_TIME DATE
+SQL> Insert into LIBRARY Values ( 1, 'BOOK1', 500 );
+1 row created.
+SQL> Insert into LIBRARY Values ( 2, 'BOOK2', 950 );
+1 row created.
+SQL> Insert into LIBRARY Values ( 3, 'BOOK3',850);
+1 row created.
+SQL> Insert into LIBRARY Values ( 4, 'BOOK4', 400);
+1 row created.
+SQL> select * from library;
+ BOOK_ID BOOK_NAME BOOK_PRICE
+---------- ---------- ----------
+ 1 BOOK1 500
+ 2 BOOK2 950
+ 3 BOOK3 850
+ 4 BOOK4 400
+SQL> select * from library_audit_row;
+no rows selected
+SQL> edit trig.sql
+Create or replace trigger trig_Row after delete or update on library for each row
+declare
+au_ch varchar(20);
+begin
+if deleting then
+au_ch:='DELETE';
+end if;
+if updating then
+au_ch:='UPDATE';
+end if;
+insert into library_audit_row 
+values(:old.BOOK_ID,:old.BOOK_NAME,:old.BOOK_PRICE,au_ch,current_timestamp);
+end;
+/
+SQL> @trig
+Trigger created.
+SQL> update library set book_name='SQL' where book_id=1;
+1 row updated.
+SQL> select * from library_audit_row;
+ BOOK_ID BOOK_NAME BOOK_PRICE AUDIT_CHANGE UPDATE_TI
+---------- ---------- ---------- -------------------- ---------
+ 1 BOOK1 500 UPDATE 28-SEP-20
+SQL> delete from library where book_id=1;
+1 row deleted.
+SQL> select * from library_audit_row;
+ BOOK_ID BOOK_NAME BOOK_PRICE AUDIT_CHANGE UPDATE_TI
+---------- ---------- ---------- -------------------- ---------
+ 1 BOOK1 500 UPDATE 28-SEP-20
+ 1 SQL 500 DELETE 28-SEP-20
+Statement level trigger
+SQL> desc library_audit_stmt;
+Name Null? Type
+----------------------------------------- -------- ----------------------------
+AUDIT_HISTORY_ID NUMBER
+AUDIT_CHANGE VARCHAR2(20)
+USER_NAME VARCHAR2(10)
+UPDATE_TIME DATE
+SQL> create sequence seq_id start with 1;
+Sequence created.
+create or replace trigger trigs before delete or update on library 
+declare
+au_ch varchar(20);
+begin
+if deleting then
+au_ch:='delete';
+end if;
+if updating then
+au_ch:='update';
+end if;
+insert into LIBRARY_AUDIT_STMT VALUES (Seq_id.nextval, au_ch, USER, 
+CURRENT_TIMESTAMP);
+end;
+/
+SQL> @trig2
+Trigger created.
+SQL> delete from library where book_id=3;
+1 row deleted.
+SQL> select * from library_audit_stmt;
+AUDIT_HISTORY_ID AUDIT_CHANGE USER_NAME UPDATE_TI
+---------------- -------------------- ---------- ---------
+ 1 update VND 28-SEP-20
+ 2 delete VND 28-SEP-20

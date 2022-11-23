@@ -1,0 +1,13 @@
+//b)	Write a program in PL/SQL to update the salary of a specifc employee by 8%.  
+Table : Employee (Empid, Ename, Salary, Designation) 
+
+create table emp10(eid int,ename varchar (20),salary int, designation varchar(20),new_salary int)
+insert into emp10 values(2,'s',200,'comp')
+declare
+eid int;
+salary int;
+begin
+update emp10 SET salary = salary + salary * 8 /100 WHERE eid=2;
+insert into emp10 values 
+end;
+select * from emp10;

@@ -1,0 +1,101 @@
+MongoDB Save() Method
+The save() method replaces the existing document with the new document passed in save()
+method
+Syntax
+>db.COLLECTION_NAME.save({_id:ObjectId(),NEW_DATA})
+MongoDB Delete Document
+The remove() Method
+• MongoDB's remove() method is used to remove document from the collection.
+• remove() method accepts two parameters. One is deletion criteria and second is justOne
+flag
+1. deletion criteria : (Optional) deletion criteria according to documents will be removed.
+2. justOne : (Optional) if set to true or 1, then remove only one document.
+Syntax:
+>db.COLLECTION_NAME.remove(DELLETION_CRITTERIA)
+Following example will remove all the documents whose title is 'MongoDB Overview'
+>db.mycol.remove({'title':'MongoDB Overview'})
+Remove only one
+If there are multiple records and you want to delete only first record, then set justOne
+parameter in remove() method
+>db.COLLECTION_NAME.remove(DELETION_CRITERIA,1)
+Remove All documents
+If you don't specify deletion criteria, then mongodb will delete whole documents from the
+collection. This is equivalent of SQL's truncate command.
+>db.mycol.remove()
+
+Create Database : db; // Shows By Default Database Name “ Test ”
+
+use College; // Create “College” Database
+db; // Shows Current Database Name
+Drop Database
+db.dropDatabase( ) ;
+Create Collection :
+
+db.createCollection("stud");
+Drop Collection :
+db.stud.drop();
+
+Insert Data Operations
+db.stud.insert({roll:1, name:"Raj", age:22,});
+db.stud.insert({roll:2, name:"Sagar", age:20});
+db.stud.insert({roll:3, name:"Ajay", age:19});
+db.stud.insert({roll:4, name:"Manoj", age:18});
+db.stud.insert({roll:5, name:"Pavan", age:25});
+db.stud.insert({roll:6, name:"Nilesh", age:20});
+db.stud.insert({roll:7, name:"Kiran", age:23});
+db.stud.insert({roll:8, name:"Abhi", age:24});
+db.stud.insert({roll:9, name:"Madhav",age:18});
+db.stud.insert({roll:10, name:"Sunil", age:17});
+Display Data : find();
+db.stud.find();
+db.stud.find().pretty();
+RDBMS Where Clause Equivalents in MongoDB
+($gt-Greater than
+$gte-Greater than equal 
+$lt-Less than
+$lte-Less than equal
+$ne-Not equal
+$in-in
+$nin-Not in )
+db.stud.find({"roll" : 2});
+db.stud.find({"roll" : 2}).pretty( );
+db.stud.find({"age" : {"$lt":20}});
+db.stud.find({"age" : {"$lt":20}}).pretty( );
+db.stud.find({"age" : {"$gte" : 20, "$lte" :25}},{name:1,age:1}).pretty( );
+db.stud.find({"age" : {"$ne" : 25}}).pretty( );
+db.stud.find({"age" : {"$gt" : 20, "$lt" :25}}).pretty( );
+db.stud.find({"age" : {"$in" : [17,22,25]}}).pretty( );
+Like Operator
+db.stud.find({name:/^A/}).pretty():; // name field Start with “A” Character
+db.stud.find({name:/a/}).pretty(); // name contains with “a” Character
+or in Mongodb for pattern matching we can use $regex operator
+Search document with name start with S
+db.stud.find({“name”:{$regex:/^s/}}.pretty()
+Search document ending with s
+db.stud.find({“name”:{$regex:/s$/}}.pretty()
+Logical Operator ($or, $and, $not, $nor )
+AND Operator ($and) :
+
+db.stud.find ({roll:3, name: "Ajay"});
+db.stud.find ({roll:3, name: "Ajay"}).pretty( );
+db.stud.find ({"$and": [{roll:3}, {name: "Ajay"}] }).pretty( );
+OR Operator ($or):
+db.stud.find ({"$or": [{roll:3}, {name: "Abhi"}]} ).pretty( );
+NOT Operator ($not) :
+db.stud.find ({ name: { $not: /^A/}}); // Student name not like with “A” char
+Using AND and OR Together
+db.stud.find ({{age:25} ,{"$or": [{roll:3}, {name: "Abhi"}] }}).pretty();
+Update Data : update(); ( and Insert Data using :- save(); )
+db.stud.save({roll:11, name:"Rajesh", age:21});
+db.stud.update({roll:11},{$set:{name:"Anil"}});
+Delete Data : remove();
+db.stud.remove({"roll":11});
+db.stud.find().pretty();
+MongoDB Sort Documents
+The sort() Method
+• To sort documents in MongoDB, you need to use sort() method.
+• sort() method accepts a document containing list of fields along with their sorting order.
+• To specify sorting order 1 and -1 are used. 1 is used for ascending order while -1 is used
+for descending order.
+Syntax:
+>db.COLLECTION_NAME.find().sort({KEY:1})
